@@ -1,9 +1,8 @@
 ﻿using FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FuncaoF6.AlgoritmoGenetico
 {
@@ -18,6 +17,9 @@ namespace FuncaoF6.AlgoritmoGenetico
 
             for (int i = 0; i < numeroDeExecucoes; i++)
             {
+                Console.Clear();
+                Console.Write($"Execução numero {i + 1}/{numeroDeExecucoes}");
+
                 AlgoritmoGeneticoImpl ga = new AlgoritmoGeneticoImpl();
 
                 ga.IniciaPopulacao();
@@ -60,25 +62,40 @@ namespace FuncaoF6.AlgoritmoGenetico
                 resultados[i, 6] = ga.Populacao.First().Fitness.ToString("0.0000");
             }
 
-            Console.WriteLine("\n\n-------------------------- Resultado Execução --------------------------\n\n");
 
-            Console.WriteLine(String.Format("Execução|Tamanho da População|Numero de Gerações|Taxa de Mutação|Taxa de Crossover|X      |Y      |Fitness"));
-            for (int i = 0; i < numeroDeExecucoes; i++)
-                Console.WriteLine(String.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
-                    (i + 1).ToString().PadRight(8),
-                    resultados[i, 0].PadRight(20),
-                    resultados[i, 1].PadRight(18),
-                    (resultados[i, 2] + "%").PadRight(15),
-                    (resultados[i, 3] + "%").PadRight(17),
-                    resultados[i, 4].PadLeft(7),
-                    resultados[i, 5].PadLeft(7),
-                    resultados[i, 6]));
+            //Dá saída em um arquivo
+            var nomeArquivo = $"ResultadoGA_{DateTime.Now.ToString("yyyyMMdd-HHmmffff")}.txt";
+            var caminhoArquivo = System.AppDomain.CurrentDomain.BaseDirectory.ToString() + nomeArquivo;
 
-            Console.WriteLine("\n\n------------------------------------------------------------------------\n\n");
+            if (!System.IO.File.Exists(caminhoArquivo))
+                using (System.IO.File.Create(caminhoArquivo)) { }
 
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(caminhoArquivo, true))
+            {
+                file.WriteLine("-------------------------- Resultado Execução --------------------------\n\n");
 
+                file.WriteLine(String.Format("Fitness|Execução|Tamanho da População|Numero de Gerações|Taxa de Mutação|Taxa de Crossover|X      |Y"));
+                for (int i = 0; i < numeroDeExecucoes; i++)
+                    file.WriteLine(String.Format("{7}|{0}|{1}|{2}|{3}|{4}|{5}|{6}",
+                        (i + 1).ToString().PadRight(8),
+                        resultados[i, 0].PadRight(20),
+                        resultados[i, 1].PadRight(18),
+                        (resultados[i, 2] + "%").PadRight(15),
+                        (resultados[i, 3] + "%").PadRight(17),
+                        resultados[i, 4].PadLeft(7),
+                        resultados[i, 5].PadLeft(7),
+                        resultados[i, 6].PadLeft(7)));
+
+                file.Write("\n\n------------------------------------------------------------------------");
+
+                
+            }
+
+            System.Diagnostics.Process.Start(caminhoArquivo);
             Console.ReadKey();
+            System.IO.File.Delete(caminhoArquivo);
+
         }
-        
+
     }
 }
