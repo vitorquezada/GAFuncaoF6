@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FuncaoF6.AlgoritmoGenetico.Model
 {
-    public class Solucao : IComparable<Solucao>
+    public class Solucao
     {
         public int tamanho_cromossomo;
         public int[] Cromossomo;
@@ -45,14 +45,7 @@ namespace FuncaoF6.AlgoritmoGenetico.Model
             y = (y * (range / Math.Pow(2, numeroDeBits))) + ValorMinimo;
         }
 
-        public int Compare(Solucao x, Solucao y)
-        {
-            var FitnessX = x.Fitness;
-            var FitnessY = y.Fitness;
-            if (FitnessX == FitnessY)
-                return 0;
-            return (FitnessX < FitnessY) ? -1 : 1;
-        }
+        
 
         public override string ToString()
         {
@@ -60,11 +53,6 @@ namespace FuncaoF6.AlgoritmoGenetico.Model
             return str;
         }
 
-        public int CompareTo(Solucao other)
-        {
-            if (this.Fitness == other.Fitness)
-                return 0;
-            return (this.Fitness < other.Fitness) ? -1 : 1;
-        }
+        
     }
 }
