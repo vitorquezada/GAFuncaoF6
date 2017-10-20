@@ -10,7 +10,7 @@ namespace FuncaoF6.AlgoritmoGenetico
     {
         public static void Main(string[] args)
         {
-            int numeroDeExecucoes = 50;
+            int numeroDeExecucoes = 10;
             string[,] resultados = new string[numeroDeExecucoes, 7];
 
 
@@ -31,14 +31,11 @@ namespace FuncaoF6.AlgoritmoGenetico
                 for (int j = 0; j < ga.NUMERO_GERACOES; j++)
                 {
                     melhorFitness = ga.Populacao.First().Fitness;
-                    //Console.WriteLine("Geração: " + (j + 1));
-                    //Console.WriteLine("Melhor: " + ga.Populacao.First().ToString());
-                    //Console.WriteLine("Pior: " + ga.Populacao.Last().ToString());
                     ga.RealizaCruzamento();
                     ga.RealizaMutacao();
                     ga.SelecionaParaProximaGeracao();
 
-                    // Tratamento para retirar convergencia local
+                    // Tratamento para retirar convergencia local (Elitismo)
                     if (melhorFitness == ga.Populacao.First().Fitness)
                         geracoesComResultadoIgual++;
                     else
