@@ -13,7 +13,7 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
         public int POPULACAO_TAMANHO = 100;
         public int CROMOSSOMO_TAMANHO = 44;
         public int NUMERO_GERACOES = 100;
-        public double TAXA_MUTACAO = 0.005;
+        public double TAXA_MUTACAO = 0.05;
         public double TAXA_REPRODUCAO = 0.65;
 
         public List<Solucao> Populacao = new List<Solucao>();
