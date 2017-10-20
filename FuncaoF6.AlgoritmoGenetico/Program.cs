@@ -92,6 +92,8 @@ namespace FuncaoF6.AlgoritmoGenetico
             Console.ReadKey();
             System.IO.File.Delete(caminhoArquivo);
 
+            
+
         }
 
     }

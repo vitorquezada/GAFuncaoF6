@@ -22,9 +22,9 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
 
         public void IniciaPopulacao()
         {
-            if(Populacao.Count > 0)
+            if (Populacao.Count > 0)
             {
-                Populacao.RemoveRange(1, Populacao.Count-1);
+                Populacao.RemoveRange(1, Populacao.Count - 1);
             }
 
             for (int i = Populacao.Count; i < POPULACAO_TAMANHO; i++)
@@ -41,9 +41,7 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
             int numeroDeCruzamentos = (int)((POPULACAO_TAMANHO / 2) * TAXA_REPRODUCAO) * 2;
             double SomatorioFitness = 0;
 
-
-            foreach (Solucao x in Populacao)
-                SomatorioFitness += x.Fitness;
+            Populacao.ForEach(x => SomatorioFitness += x.Fitness);
 
             for (int i = 0; i < numeroDeCruzamentos; i += 2)
             {
@@ -69,8 +67,7 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
 
         public void SelecionaParaProximaGeracao()
         {
-            foreach (Solucao item in Descendentes)
-                Populacao.Add(item);
+            Descendentes.ForEach(x => Populacao.Add(x));
 
             Populacao = Populacao.OrderByDescending(x => x.Fitness).ToList();
 
