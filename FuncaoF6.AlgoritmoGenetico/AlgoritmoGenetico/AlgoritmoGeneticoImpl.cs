@@ -71,7 +71,7 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
 
                 Populacao.ForEach(x =>
                 {
-                    if (melhorSolucao.Fitness < x.Fitness)
+                    if (x.Fitness > melhorSolucao.Fitness)
                         melhorSolucao = x;
                 });
 
