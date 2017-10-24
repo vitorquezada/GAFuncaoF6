@@ -10,11 +10,11 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
     public class AlgoritmoGeneticoImpl
     {
         public Random r = new Random();
-        public int POPULACAO_TAMANHO = 100;
+        public int POPULACAO_TAMANHO = 300;
         public int CROMOSSOMO_TAMANHO = 44;
         public int NUMERO_GERACOES = 100;
         public double TAXA_MUTACAO = 0.005;
-        public double TAXA_REPRODUCAO = 0.65;
+        public double TAXA_REPRODUCAO = 0.75;
 
         public List<Solucao> Populacao = new List<Solucao>();
         public List<Solucao> Descendentes = new List<Solucao>();
@@ -80,6 +80,7 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
 
                 Populacao.Add(melhorSolucao);
             }
+
             IniciaPopulacao();
         }
 
