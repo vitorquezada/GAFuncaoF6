@@ -13,7 +13,7 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
         public int POPULACAO_TAMANHO = 100;
         public int CROMOSSOMO_TAMANHO = 44;
         public int NUMERO_GERACOES = 100;
-        public double TAXA_MUTACAO = 0.05;
+        public double TAXA_MUTACAO = 0.005;
         public double TAXA_REPRODUCAO = 0.65;
 
         public List<Solucao> Populacao = new List<Solucao>();
@@ -22,16 +22,11 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
 
         public void IniciaPopulacao()
         {
-            if (Populacao.Count > 0)
-            {
-                Populacao.RemoveRange(1, Populacao.Count - 1);
-            }
-
-            for (int i = Populacao.Count; i < POPULACAO_TAMANHO; i++)
+            while (Populacao.Count < POPULACAO_TAMANHO)
             {
                 int[] cromossomo = new int[CROMOSSOMO_TAMANHO];
-                for (int j = 0; j < CROMOSSOMO_TAMANHO; j++)
-                    cromossomo[j] = r.Next(2);
+                for (int i = 0; i < CROMOSSOMO_TAMANHO; i++)
+                    cromossomo[i] = r.Next(2);
                 Populacao.Add(new Solucao(cromossomo));
             }
         }
@@ -39,16 +34,17 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
         public void RealizaCruzamento()
         {
             int numeroDeCruzamentos = (int)((POPULACAO_TAMANHO / 2) * TAXA_REPRODUCAO) * 2;
-            double SomatorioFitness = 0;
-
-            Populacao.ForEach(x => SomatorioFitness += x.Fitness);
+            double SomatorioFitness = Populacao.Sum(x => x.Fitness);
 
             for (int i = 0; i < numeroDeCruzamentos; i += 2)
             {
                 int P1 = SelecionarRoleta(SomatorioFitness);
                 int P2 = SelecionarRoleta(SomatorioFitness);
 
-                Cruzar(Populacao[P1], Populacao[P2], out Solucao F1, out Solucao F2);
+                Solucao F1 = null;
+                Solucao F2 = null;
+
+                Cruzar(Populacao[P1], Populacao[P2], ref F1, ref F2);
                 Descendentes.Add(F1);
                 Descendentes.Add(F2);
             }
@@ -56,32 +52,44 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
 
         public void RealizaMutacao()
         {
-            foreach (Solucao item in Descendentes)
-                for (int i = 0; i < CROMOSSOMO_TAMANHO; i++)
+            for (int i = 0; i < Descendentes.Count; i++)
+                for (int j = 0; j < CROMOSSOMO_TAMANHO; j++)
                 {
                     double random = r.NextDouble();
                     if (random <= TAXA_MUTACAO)
-                        item.Cromossomo[i] = item.Cromossomo[i] == 0 ? 1 : 0;
+                        Descendentes[i].Cromossomo[j] = Descendentes[i].Cromossomo[j] == 0 ? 1 : 0;
                 }
         }
 
-        public void SelecionaParaProximaGeracao()
+        public void ProximaGeracao()
         {
-            Descendentes.ForEach(x => Populacao.Add(x));
+            if (Descendentes.Count > 0)
+            {
+                Descendentes.ToList().ForEach(x => Populacao.Add(x));
 
-            Populacao = Populacao.OrderByDescending(x => x.Fitness).ToList();
+                Solucao melhorSolucao = Populacao[0];
 
-            for (int i = Populacao.Count - 1; i >= POPULACAO_TAMANHO; i--)
-                Populacao.RemoveAt(i);
+                Populacao.ForEach(x =>
+                {
+                    if (melhorSolucao.Fitness < x.Fitness)
+                        melhorSolucao = x;
+                });
 
-            Descendentes.Clear();
+                Descendentes.Clear();
+                Populacao.Clear();
+
+                Populacao.Add(melhorSolucao);
+            }
+            IniciaPopulacao();
         }
 
-        private void Cruzar(Solucao P1, Solucao P2, out Solucao F1, out Solucao F2)
+        private void Cruzar(Solucao P1, Solucao P2, ref Solucao F1, ref Solucao F2)
         {
             int tamanhoVariavelCromossomo = CROMOSSOMO_TAMANHO / 2; // 22
             int indexX = r.Next(tamanhoVariavelCromossomo); // 0 <= indexX < 21
-            int indexY = tamanhoVariavelCromossomo + r.Next(tamanhoVariavelCromossomo); // 22 <= IndexY < 43
+            int indexY = r.Next(tamanhoVariavelCromossomo); // 22 <= IndexY < 43
+            indexY += tamanhoVariavelCromossomo;
+
             int[] cromossomo_F1 = new int[CROMOSSOMO_TAMANHO];
             int[] cromossomo_F2 = new int[CROMOSSOMO_TAMANHO];
 
@@ -101,14 +109,14 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
 
         private int SelecionarRoleta(double somatorioFitness)
         {
-            int index = Populacao.Count - 1;
+            int index = 0;
             double random = r.NextDouble() * somatorioFitness;
-            double acumulado = 0;
+            double acumulado = 0.0;
 
             for (int i = 0; i < Populacao.Count; i++)
             {
                 acumulado += Populacao[i].Fitness;
-                if (random <= acumulado)
+                if (random < acumulado)
                 {
                     index = i;
                     break;
@@ -116,6 +124,5 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
             }
             return index;
         }
-
     }
 }
