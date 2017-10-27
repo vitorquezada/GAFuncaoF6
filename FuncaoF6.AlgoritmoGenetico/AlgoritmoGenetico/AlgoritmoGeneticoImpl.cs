@@ -119,6 +119,8 @@ namespace FuncaoF6.AlgoritmoGenetico.AlgoritmoGenetico
                 acumulado += Populacao[i].Fitness;
                 if (random < acumulado)
                 {
+                    //Console.WriteLine("Random:" + random);
+                    //Console.WriteLine("Acumulado: " + acumulado);
                     index = i;
                     break;
                 }
